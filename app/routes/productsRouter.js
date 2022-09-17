@@ -1,5 +1,5 @@
 const express = require('express');
-const { faker } = require('@faker-js/faker');
+
 
 const validatorHandler = require('./../middlewares/validatorHandler');
 const {
