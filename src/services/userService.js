@@ -1,7 +1,4 @@
-const { faker } = require('@faker-js/faker');
 const boom = require('@hapi/boom');
-const id = require('faker/lib/locales/id_ID');
-
 const { models } = require('./../libs/sequelize');
 
 
