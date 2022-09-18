@@ -1,10 +1,9 @@
 const express = require('express');
 
-
 const validatorHandler = require('./../middlewares/validatorHandler');
 const {
   createdProdutSchema,
-  updateProdutSchema,
+  updateProductSchema,
   getProdutSchema,
 } = require('./../schemas/productSchema');
 const productService = require('./../services/productsService');
@@ -25,8 +24,8 @@ router.get(
       const { id } = req.params;
       const product = await service.findOne(id);
       res.json(product);
-      res.status(204).send('Product not found');
     } catch (error) {
+      res.status(204).send('Product not found');
       next(error);
     }
   }
@@ -35,31 +34,41 @@ router.get(
 router.post(
   '/',
   validatorHandler(createdProdutSchema, 'body'),
-  async (req, res) => {
-    const body = req.body;
-    const newProduct = await service.create(body);
-    res.status(201).json(newProduct);
+  async (req, res, next) => {
+    try {
+      const body = req.body;
+      const newProduct = await service.create(body);
+      res.status(201).json(newProduct);
+    } catch (error) {
+      next(error);
+    }
   }
 );
 
-router.patch('/:id',
-validatorHandler(getProdutSchema, 'params'),
-validatorHandler(updateProdutSchema, 'body'),
-async (req, res, next) => {
+router.patch(
+  '/:id',
+  validatorHandler(getProdutSchema, 'params'),
+  validatorHandler(updateProductSchema, 'body'),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const body = req.body;
+      const product = await service.update(id, body);
+      res.json(product);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.delete('/:id', async (req, res, next) => {
+  const { id } = req.params;
   try {
-    const { id } = req.params;
-    const body = req.body;
-    const product = await service.update(id, body);
-    res.json(product);
+    const deleteResponse = await service.delete(id);
+    res.json(deleteResponse);
   } catch (error) {
     next(error);
   }
-});
-
-router.delete('/:id', async (req, res) => {
-  const { id } = req.params;
-  const deleteResponse = await service.delete(id);
-  res.json(deleteResponse);
 });
 
 module.exports = router;

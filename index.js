@@ -25,6 +25,7 @@ app.get('/', (req, res) => {
   res.send('Hola mi server en express');
 });
 
+
 routerApi(app);
 
 app.use(logErrors);
